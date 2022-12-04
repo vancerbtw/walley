@@ -1,25 +1,26 @@
 import { ClientEvents, ClientUser, Events } from "discord.js";
 import { Database } from "../services/Database";
-import { BaseEvent } from "src/types/BaseEvent";
+import { BaseEvent } from "src/base/BaseEvent";
 import { injectable, container, inject } from "tsyringe";
 import { Bot } from "src/services/Bot";
+import { GuildManager } from "../managers/GuildManager";
 
 @injectable()
 export default class OnJoin implements BaseEvent {
-  constructor(private database: Database) {}
+  constructor(private guildManager: GuildManager) {}
 
   eventName = Events.GuildCreate;
   listener: (bot: Bot, ...args: ClientEvents[Events.GuildCreate]) => void = async (bot, guild) => {
     let logs = await guild.fetchAuditLogs();
     //searching audit logs to get the discord id of the user who invited our bot
-    const invitingUser = logs.entries.filter(e => e.action === 28).find(e => (e.target as ClientUser).id === bot.client.user?.id)?.executor;
+    const invitingUserResult = logs.entries.filter(e => e.action === 28).find(e => (e.target as ClientUser).id === bot.client.user?.id)?.executor;
 
-    if (!invitingUser) return;
+    if (!invitingUserResult) return;
 
-    const resolved = bot.client.users.resolve(invitingUser);
+    const invitingUser = bot.client.users.resolve(invitingUserResult);
     
-    resolved.send("hey i just joined ur guild!")
-    //   let user = logs?.executor
-    // let user = logs.find(l => l.target?.id === client.user.id)?.executor
+    await this.guildManager.createGuild(guild.id, invitingUser.id);
+
+    invitingUser.send(`Hey it looks like you have invited Walley to: ${guild.name}.`);
   }
 }

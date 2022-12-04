@@ -1,6 +1,6 @@
 import { ClientEvents, Events } from "discord.js";
 import { Database } from "../services/Database";
-import { BaseEvent } from "src/types/BaseEvent";
+import { BaseEvent } from "src/base/BaseEvent";
 import { injectable, container, inject } from "tsyringe";
 import { Bot } from "src/services/Bot";
 

@@ -1,8 +1,8 @@
-import { injectable } from "tsyringe";
+import { injectable, singleton } from "tsyringe";
 import axios from "axios";
 
-@injectable()
-export class WeatherManager {
+@singleton()
+export class Weather {
   private apiKey: string = process.env.OPEN_WEATHER_KEY!;
   private api = axios.create({
     baseURL: "https://api.openweathermap.org/data/2.5"

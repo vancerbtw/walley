@@ -8,8 +8,12 @@ dotenv.config();
 
 //loading depend injection manager
 
-console.log("Starting Walley with a chance of rain ⛈");
+(async () => {
+  console.log("Starting Walley with a chance of rain ⛈");
 
-const bot = container.resolve(Bot);
-
-bot.login();
+  const bot = container.resolve(Bot);
+  
+  await bot.init();
+  
+  bot.login();
+})()

@@ -1,12 +1,12 @@
 import fs from "fs";
 import path from "path";
-import { BaseEvent } from "src/types/BaseEvent";
-import { injectable, container } from "tsyringe";
-import { Bot } from "./Bot";
+import { BaseEvent } from "src/base/BaseEvent";
+import { injectable, container, singleton } from "tsyringe";
+import { Bot } from "../services/Bot";
 
-@injectable()
+@singleton()
 export class EventManager {
-  async loadEvents(bot: Bot) {
+  async init(bot: Bot) {
     const events = await fs.promises.readdir(path.join(__dirname, "../events"));
 
     for (const file of events) {
